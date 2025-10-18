@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>نسخه طلایی - نتایج زنده</title>
+<style>
+html, body {
+  margin:0; padding:0; overflow-x:hidden; background:#000; color:#fff; font-family:tahoma,arial,sans-serif;
+}
+
+.top90-container{
+  position:relative;
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+  overflow-x:hidden;
+  background:#000;
+}
+
+.top90-container img,
+.top90-container iframe,
+.top90-container div,
+.top90-container table,
+.top90-container * {
+  max-width:100%;
+  box-sizing:border-box;
+  word-break:break-word;
+}
+
+/* هدر بدون پس‌زمینه، فقط توپ و شعله */
+#animatedHeaderContainer{
+  position:relative;
+  height:50px;
+  overflow:hidden;
+  background:#001f3f; /* آبی تیره */
+}
+
+/* توپ با شعله کشیده */
+#football{
+  position:absolute;
+  width:30px;
+  height:30px;
+  top:10px;
+  left:-40px;
+  z-index:20; /* توپ جلوتر از متن */
+  animation:shoot 12s linear infinite;
+}
+
+#football .ball{
+  width:100%;
+  height:100%;
+  background: url('https://upload.wikimedia.org/wikipedia/commons/d/d3/Soccerball.svg') no-repeat center/contain;
+  position:relative;
+  z-index:2;
+}
+
+#football .flame{
+  position:absolute;
+  width:60px;
+  height:12px;
+  left:-40px;
+  top:10px;
+  background: radial-gradient(circle, #ff0 0%, #f00 50%, transparent 70%);
+  filter: blur(3px);
+  animation:flameFlicker 0.2s infinite alternate;
+  z-index:1; /* شعله پشت توپ */
+}
+
+@keyframes flameFlicker{
+  0% { transform: scaleX(1) scaleY(1) translateY(0); opacity:0.7; }
+  50% { transform: scaleX(1.2) scaleY(1.2) translateY(-1px); opacity:0.9; }
+  100% { transform: scaleX(0.9) scaleY(0.9) translateY(1px); opacity:0.8; }
+}
+
+@keyframes shoot {
+  0% { left:-40px; }
+  100% { left:calc(100% + 40px); }
+}
+
+/* متن پشت توپ */
+#textBehindBall{
+  position:absolute;
+  top:15px;
+  left:-150px;
+  font-weight:bold;
+  font-size:18px;
+  white-space:nowrap;
+  background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #00ffff, #0000ff, #8b00ff, #ff00ff, #ff0000);
+  background-size: 400% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation:marqueeText 12s linear infinite, colorShift 5s linear infinite;
+  z-index:10; /* پشت توپ */
+}
+
+@keyframes colorShift {
+  0% { background-position:0% 50%; }
+  50% { background-position:100% 50%; }
+  100% { background-position:0% 50%; }
+}
+
+@keyframes marqueeText {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(100% + 200px)); }
+}
+
+/* پرده پایین */
+#top90Cover{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  width:100%;
+  height:40px;
+  background:#000;
+  z-index:99999;
+  overflow:hidden;
+}
+
+/* پوشش غیرقابل کلیک لینک زیر پرده Top90 */
+#top90CoverOverlay{
+  position:absolute;
+  left:0; top:0;
+  width:100%; height:100%;
+  z-index:9999;
+  pointer-events:none;
+  background:transparent;
+}
+
+/* متن لینک دار روی پرده پایین */
+#creatorLink{
+  color:#fff;
+  text-decoration:none;
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  font-size:14px;
+  z-index:100000;
+}
+</style>
+</head>
+<body>
+
+<!-- هدر با توپ، شعله و متن پشت توپ -->
+<div id="animatedHeaderContainer">
+  <div id="textBehindBall">کی برد | Kibord</div>
+  <div id="football">
+    <div class="flame"></div>
+    <div class="ball"></div>
+  </div>
+</div>
+
+<div class="top90-container" id="top90Container">
+  <!-- اسکریپت اصلی Top90 -->
+  <script>var tw=600;var th=600;</script>
+  <script type="text/javascript" language="javascript" src="https://top90.ir/scripts/livecode.do"></script>
+
+  <noscript>
+    <a href="http://www.top90.ir/livescore" target="_blank" 
+       style="pointer-events:none; cursor:default; color:#888; text-decoration:none;">
+      نتایج زنده
+    </a>
+  </noscript>
+</div>
+
+<!-- پرده پایین با متن لینک دار و پوشش غیرقابل کلیک -->
+<div id="top90Cover" aria-hidden="true">
+  <a id="creatorLink" href="https://www.instagram.com/itszolfi" target="_blank">
+    صفحه سازنده ربات
+  </a>
+  <div id="top90CoverOverlay"></div>
+</div>
+
+<script>
+(function(){
+  function enforceMaxWidth(){
+    const c = document.getElementById('top90Container');
+    if(!c) return;
+    const els = c.querySelectorAll('*');
+    els.forEach(function(el){
+      el.style.maxWidth='100%';
+      el.style.boxSizing='border-box';
+    });
+  }
+
+  window.addEventListener('load', function(){ setTimeout(enforceMaxWidth, 500); });
+
+  const container = document.getElementById('top90Container');
+  if(window.MutationObserver && container){
+    const mo = new MutationObserver(function(){ enforceMaxWidth(); });
+    mo.observe(container, {childList:true, subtree:true, attributes:true});
+  }
+})();
+</script>
+
+</body>
+</html>
